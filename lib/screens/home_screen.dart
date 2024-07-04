@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../constants.dart';
 import '../models/category.dart';
 import '../models/product.dart';
-import '../services/firestore_service.dart';
+import '../services/products_service.dart';
 import '../widgets/home_appbar.dart';
 import '../widgets/home_slider.dart';
 import '../widgets/product_cart.dart';
@@ -19,12 +19,12 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int currentSlide = 0;
   late Future<List<Product>> _productListFuture;
-  final FirestoreService _firestoreService = FirestoreService();
+  final ProductsService _productsService = ProductsService();
 
   @override
   void initState() {
     super.initState();
-    _productListFuture = _firestoreService.fetchProducts();
+    _productListFuture = _productsService.fetchProductsByCategory('special');
   }
 
   @override

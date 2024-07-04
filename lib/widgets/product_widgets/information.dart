@@ -36,7 +36,7 @@ class ProductInfo extends StatelessWidget {
                 Row(
                   children: [
                     Container(
-                      width: 50,
+                      width: 60,
                       height: 20,
                       decoration: BoxDecoration(
                         color: kprimaryColor,
@@ -66,7 +66,7 @@ class ProductInfo extends StatelessWidget {
                         ],
                       ),
                     ),
-                    const SizedBox(width: 5),
+                    const SizedBox(width: 10),
                     const Text(
                       "(320 Reviews)",
                       style: TextStyle(

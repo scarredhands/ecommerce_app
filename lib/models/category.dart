@@ -1,6 +1,9 @@
 import 'package:ecommerce_app/screens/main_screen.dart';
+import 'package:ecommerce_app/screens/product-screens/mobile.dart';
+import 'package:ecommerce_app/screens/product-screens/watch.dart';
 import 'package:flutter/material.dart';
 
+import '../screens/product-screens/pc.dart';
 import '../screens/product-screens/shoes.dart'; // Import your screen widgets
 
 class Category {
@@ -40,13 +43,13 @@ class Categories extends StatelessWidget {
               destinationPage = Shoes(); // Use your actual destination pages
               break;
             case "PC":
-              destinationPage = Scaffold();
+              destinationPage = Pc();
               break;
             case "Mobile":
-              destinationPage = Scaffold();
+              destinationPage = Mobile();
               break;
             case "Watch":
-              destinationPage = Scaffold();
+              destinationPage = Watch();
               break;
             default:
               destinationPage = MainScreen(); // Fallback or default page
