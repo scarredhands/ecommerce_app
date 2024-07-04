@@ -97,42 +97,47 @@ class _CartScreenState extends State<CartScreen> {
           ),
         ),
       ),
-      body: FutureBuilder<List<CartItem>>(
-        future: _cartItemsFuture,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return Center(child: Text('Your cart is empty.'));
-          } else {
-            List<CartItem> cartItems = snapshot.data!;
-            return ListView.separated(
-              padding: const EdgeInsets.all(20),
-              itemBuilder: (context, index) => CartTile(
-                item: cartItems[index],
-                onRemove: () {
-                  if (cartItems[index].quantity > 1) {
+      body: SingleChildScrollView(
+        child: FutureBuilder<List<CartItem>>(
+          future: _cartItemsFuture,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(child: CircularProgressIndicator());
+            } else if (snapshot.hasError) {
+              return Center(child: Text('Error: ${snapshot.error}'));
+            } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+              return Center(child: Text('Your cart is empty.'));
+            } else {
+              List<CartItem> cartItems = snapshot.data!;
+              return ListView.separated(
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                padding: const EdgeInsets.all(20),
+                itemBuilder: (context, index) => CartTile(
+                  item: cartItems[index],
+                  onRemove: () {
+                    if (cartItems[index].quantity > 1) {
+                      setState(() {
+                        cartItems[index].quantity--;
+                      });
+                    }
+                  },
+                  onAdd: () {
                     setState(() {
-                      cartItems[index].quantity--;
+                      cartItems[index].quantity++;
                     });
-                  }
-                },
-                onAdd: () {
-                  setState(() {
-                    cartItems[index].quantity++;
-                  });
-                },
-                onDelete: () {
-                  removeItemFromCart(cartItems[index]);
-                },
-              ),
-              separatorBuilder: (context, index) => const SizedBox(height: 20),
-              itemCount: cartItems.length,
-            );
-          }
-        },
+                  },
+                  onDelete: () {
+                    removeItemFromCart(cartItems[index]);
+                  },
+                ),
+                separatorBuilder: (context, index) =>
+                    const SizedBox(height: 20),
+                itemCount: cartItems.length,
+              );
+            }
+          },
+        ),
       ),
       bottomSheet: FutureBuilder<List<CartItem>>(
         future: _cartItemsFuture,

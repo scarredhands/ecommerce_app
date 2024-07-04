@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 import '../constants.dart';
+import '../models/category.dart';
 import '../models/product.dart';
 import '../services/firestore_service.dart';
-import '../widgets/categories.dart';
 import '../widgets/home_appbar.dart';
 import '../widgets/home_slider.dart';
 import '../widgets/product_cart.dart';
@@ -51,7 +51,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   currentSlide: currentSlide,
                 ),
                 const SizedBox(height: 20),
-                const Categories(),
+                Categories(),
                 const SizedBox(height: 25),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
