@@ -1,3 +1,4 @@
+import 'package:ecommerce_app/screens/main_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:ionicons/ionicons.dart';
@@ -50,10 +51,11 @@ class _CartScreenState extends State<CartScreen> {
     }
   }
 
-  void removeItemFromCart(CartItem item) {
+  void removeItemFromCart(CartItem item) async {
+    String? userId = await _getCurrentUserId();
     setState(() {
       _cartItemsFuture =
-          _firestoreService.removeCartItem('userId', item.id).then((_) {
+          _firestoreService.removeCartItem(userId!, item.id).then((_) {
         return _fetchCartItems(); // Refresh cart items after removal
       });
     });
@@ -85,7 +87,8 @@ class _CartScreenState extends State<CartScreen> {
           padding: const EdgeInsets.only(left: 5),
           child: IconButton(
             onPressed: () {
-              Navigator.pop(context);
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => MainScreen()));
             },
             style: IconButton.styleFrom(
               backgroundColor: Colors.white,

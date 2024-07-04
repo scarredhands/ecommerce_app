@@ -8,48 +8,55 @@ class FirestoreService {
   final CollectionReference userCollection =
       FirebaseFirestore.instance.collection('users');
 
+  Future<Product?> getProductById(String productId) async {
+    try {
+      DocumentSnapshot doc =
+          await _db.collection('products').doc(productId).get();
+      if (doc.exists) {
+        return Product.fromFirestore(
+            doc.data() as Map<String, dynamic>, doc.id);
+      }
+      return null;
+    } catch (e) {
+      print('Error fetching product: $e');
+      return null;
+    }
+  }
+
   // Fetch all cart items for a user (assuming userId is available)
   Future<List<CartItem>> getCartItems(String userId) async {
-    print('Fetching cart items for user: $userId');
-
     try {
-      final cartRef = _db.collection('users').doc(userId).collection('cart');
-      print('Cart reference path: ${cartRef.path}');
-
-      QuerySnapshot querySnapshot;
-      try {
-        querySnapshot = await cartRef.get();
-        print(
-            'Query snapshot obtained. Document count: ${querySnapshot.docs.length}');
-      } catch (e) {
-        print('Error fetching query snapshot: $e');
-        return [];
-      }
+      print('Fetching cart items for user: $userId');
+      QuerySnapshot querySnapshot =
+          await _db.collection('users').doc(userId).collection('cart').get();
 
       if (querySnapshot.docs.isEmpty) {
         print('No cart items found for user: $userId');
         return [];
       }
 
-      List<CartItem> cartItems = [];
-      for (var doc in querySnapshot.docs) {
-        print('Processing document: ${doc.id}');
-        try {
-          Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-          CartItem item = CartItem.fromFirestore(data, doc.id);
-          cartItems.add(item);
-        } catch (e) {
-          print('Error processing cart item ${doc.id}: $e');
-          // Continue to next document instead of throwing
-        }
-      }
+      List<Future<CartItem>> cartItemFutures =
+          querySnapshot.docs.map((doc) async {
+        Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+        CartItem item = CartItem.fromFirestore(data, doc.id);
+
+        // Fetch the product details
+        item.product = await getProductById(item.productId);
+
+        print(
+            'Fetched cart item: id=${item.id}, productId=${item.productId}, quantity=${item.quantity}');
+        return item;
+      }).toList();
+
+      // Wait for all cart items to be processed
+      List<CartItem> cartItems = await Future.wait(cartItemFutures);
 
       print(
           'Successfully fetched ${cartItems.length} cart items for user: $userId');
       return cartItems;
     } catch (e) {
-      print('Unexpected error in getCartItems: $e');
-      return []; // Return empty list instead of throwing
+      print('Error fetching cart items: $e');
+      throw Exception('Failed to fetch cart items: $e');
     }
   }
 

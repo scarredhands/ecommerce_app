@@ -1,4 +1,5 @@
 import 'package:ecommerce_app/screens/liked_items_screen.dart';
+import 'package:ecommerce_app/screens/new_features_screen.dart';
 import 'package:ecommerce_app/widgets/product_cart.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -29,7 +30,7 @@ class _MainScreenState extends State<MainScreen> {
 
   void _initializeScreens() {
     screens = [
-      const Scaffold(),
+      NewFeaturesScreen(),
       LikedItemsScreen(likedItems: likedProducts),
       const HomeScreen(),
       const CartScreen(),
